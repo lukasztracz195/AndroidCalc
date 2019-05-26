@@ -1,3 +1,40 @@
 <resources>
-    <string name="app_name">AndroidCalc</string>
+    <string name="app_name">CALCULATOR</string>
+    <string name="simple_mode">Simple</string>
+    <string name="advanced_mode">Advanced</string>
+    <string name="about">About</string>
+    <string name="exit">Exit</string>
+    <string name="author">Application was created by</string>
+    <string name="author_name">Łukasz Tracz</string>
+    <string name="all_rights_reserved">All rights reserved</string>
+    <string name="back">BACK</string>
+    <string name="ce">CE</string>
+    <string name="c">C</string>
+    <string name="b0">0</string>
+    <string name="b1">1</string>
+    <string name="b2">2</string>
+    <string name="b3">3</string>
+    <string name="b4">4</string>
+    <string name="b5">5</string>
+    <string name="b6">6</string>
+    <string name="b7">7</string>
+    <string name="b8">8</string>
+    <string name="b9">9</string>
+    <string name="b_diff">/</string>
+    <string name="b_multiply">*</string>
+    <string name="b_substract">-</string>
+    <string name="b_addition">+</string>
+    <string name="b_equals">=</string>
+    <string name="b_dot">.</string>
+    <string name="sin">sin</string>
+    <string name="cos">cos</string>
+    <string name="tan">tan</string>
+    <string name="ln">ln</string>
+    <string name="sqrt">sqrt</string>
+    <string name="pow2">^</string>
+    <string name="pow">pi</string>
+    <string name="log">e</string>
+    <string name="b_left_bracket">(</string>
+    <string name="b_right_bracket">)</string>
+    <string name="b_plus_minu">\u00B1</string>
 </resources>
