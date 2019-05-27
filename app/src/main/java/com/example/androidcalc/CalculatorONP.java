@@ -16,34 +16,32 @@ import java.util.regex.PatternSyntaxException;
 public class CalculatorONP {
     private Activity contex;
     private Configuration config;
-    private StringBuilder sb;
+
     private TextView textViewOnResult;
     private TextView textViewOnEquation;
-    private List<Integer> numericButtons;
-    private List<Integer> functionalButtons;
-    private List<Integer> specialButtons;
+
+    private List<Integer> numericButtonsIDs;
+    private List<Integer> functionalButtonsIDs;
+    private List<Integer> specialButtonsIDs;
+    private List<Integer> constButtonsIDs;
+
     private Button buttonEqual;
     private Button buttonCE;
     private Button buttonC;
+    private String selectedFunction;
     private boolean clickedFunctionButton = false;
-    private boolean clickedEquelsButton = false;
+    private boolean clickedEquelButton = false;
     private boolean clickedSpecialButton = false;
+    private boolean clickedConstButton = false;
     private boolean clickedCE = false;
-    private boolean bracketIsOpen = false;
-    private boolean piButton;
-    private boolean eButton;
 
 
-    public CalculatorONP(Activity contex, List<Integer> numericButtons, List<Integer> functionalButtons, Configuration config) {
+    public CalculatorONP(Activity contex, List<Integer> numericButtonsIDs, List<Integer> functionalButtonsIDs, Configuration config) {
         this.contex = contex;
-        this.numericButtons = numericButtons;
-        this.functionalButtons = functionalButtons;
         this.config = config;
-        textViewOnResult = contex.findViewById(R.id.result);
-        buttonC = contex.findViewById(R.id.bC);
-        buttonCE = contex.findViewById(R.id.bCE);
-        buttonEqual = contex.findViewById(R.id.b_equals);
-        textViewOnEquation = contex.findViewById(R.id.equation);
+        this.numericButtonsIDs = numericButtonsIDs;
+        this.functionalButtonsIDs = functionalButtonsIDs;
+        setButtons();
         setActionButtons();
     }
 
@@ -56,30 +54,60 @@ public class CalculatorONP {
         setActionPlusMinus();
     }
 
-    public CalculatorONP(Activity contex, List<Integer> numericButtons, List<Integer> functionalButtons, List<Integer> specialButtons, Configuration config) {
-        this.contex = contex;
-        this.numericButtons = numericButtons;
-        this.functionalButtons = functionalButtons;
-        this.specialButtons = specialButtons;
-        this.config = config;
+    private void setButtons(){
+        textViewOnEquation = contex.findViewById(R.id.equation);
         textViewOnResult = contex.findViewById(R.id.result);
         buttonC = contex.findViewById(R.id.bC);
         buttonCE = contex.findViewById(R.id.bCE);
         buttonEqual = contex.findViewById(R.id.b_equals);
-        textViewOnEquation = contex.findViewById(R.id.equation);
-        setActionButtons();
-        setActionOnSpecialButtons();
     }
 
+    public CalculatorONP(Activity contex, List<Integer> numericButtonsIDs, List<Integer> functionalButtonsIDs, List<Integer> specialButtonsIDs, List<Integer> constButtonsIDs,  Configuration config) {
+        this.contex = contex;
+        this.config = config;
+        this.numericButtonsIDs = numericButtonsIDs;
+        this.functionalButtonsIDs = functionalButtonsIDs;
+        this.specialButtonsIDs = specialButtonsIDs;
+        this.constButtonsIDs = constButtonsIDs;
+        setButtons();
+        setActionButtons();
+        setActionOnSpecialButtons();
+        setActionOnConstButtons();
+    }
 
-    private void updateContentInTextViewOnEquation() {
-        System.out.println("updateContentInTextViewOnEquation()");
+    private void setActionOnConstButtons(){
+        for(Integer id : constButtonsIDs){
+            TextView button = contex.findViewById(id);
+            button.setOnClickListener((View v)->{
+                TextView tmp = (TextView) v;
+                if(containActionFunctionalSignInTextViewOnEquation() || isEmptyTextViewOnEquation()) {
+                    double constValue = 0.0;
+                    switch (tmp.getText().toString()) {
+                        case "pi":{
+                            constValue = Math.PI;
+                            break;
+                        }
+                        case "e":{
+                            constValue = Math.E;
+                            break;
+                        }
+                    }
+                    textViewOnResult.setText(String.valueOf(constValue));
+                }else{
+                    Toast.makeText(contex.getApplicationContext(), "Error: You must select Action", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    private void transportContentFromResultToEquation() {
+        System.out.println("transportContentFromResultToEquation()");
         textViewOnEquation.setText(convertStringOfNumberWithENotationToNormal(textViewOnResult.getText().toString()));
 
     }
 
-    private void updateContentInTextViewOnEquation(Button button) {
-        System.out.println("updateContentInTextViewOnEquation(Button button) ");
+    private void transportContentFromResultToEquation(TextView button) {
+        System.out.println("transportContentFromResultToEquation(Button button) ");
         StringBuilder sb = new StringBuilder();
         if (isEmptyTextViewOnEquation()) {
             sb.append(textViewOnEquation.getText());
@@ -88,7 +116,6 @@ public class CalculatorONP {
         } else {
             sb.append(textViewOnEquation.getText());
             sb.append(button.getText());
-            // sb.append(convertStringOfNumberWithENotationToNormal(textViewOnResult.getText().toString()));
         }
         clearTextViewOnResult();
         textViewOnEquation.setText(sb.toString());
@@ -98,8 +125,8 @@ public class CalculatorONP {
     private void setActionOnButtonEqual() {
         System.out.println("setActionOnButtonEqual");
         buttonEqual.setOnClickListener((View v) -> {
-            Button button = (Button) v;
-            clickedEquelsButton = true;
+            TextView button = (TextView) v;
+            clickedEquelButton = true;
             if (clickedCE && !isEmptyTextViewOnEquation() && !containActionFunctionalSignInTextViewOnEquation()) {
                 if (containActionFunctionalSignInTextViewOnEquation()) {
                     textViewOnResult.setText(textViewOnEquation.getText().subSequence(0, textViewOnEquation.getText().length()));
@@ -137,7 +164,7 @@ public class CalculatorONP {
                         System.out.println(result);
                         String resultS = fitNumberToNumbersOfPlaceOnTextViewOnResult(getHowManyDigitsIsPossibleDisplayOnTextViewOnResult(), result);
                         textViewOnResult.setText(convertStringOfNumberWithENotationToNormal(resultS));
-                        updateContentInTextViewOnEquation();
+                        transportContentFromResultToEquation();
                         disableNumericButtons();
                     }
 
@@ -148,7 +175,7 @@ public class CalculatorONP {
         });
     }
 
-    private void updateTextViewOnEquationAfterUsedFunctionalButton(Button button) {
+    private void updateTextViewOnEquationAfterUsedFunctionalButton(TextView button) {
         System.out.println("updateTextViewOnEquationAfterUsedFunctionalButton(Button button)");
         String sb = String.valueOf(textViewOnEquation.getText()) + textViewOnResult.getText() +
                 button.getText();
@@ -168,18 +195,14 @@ public class CalculatorONP {
     }
 
     private void setActionOnNumericButtons() {
-        for (Integer id : numericButtons) {
+        for (Integer id : numericButtonsIDs) {
+            System.out.println(id);
             Button tmp = contex.findViewById(id);
             tmp.setOnClickListener((View v) -> {
-                Button tmpButton = (Button) v;
+                TextView tmpButton = (TextView) v;
                 System.out.println("setActionOnNumericButtons: " + tmpButton.getText());
                 int size = getHowManyDigitsIsPossibleDisplayOnTextViewOnResult();
-                if (tmp.getText().equals("(")) {
-                    bracketIsOpen = true;
-                }
-                if (tmp.getText().equals(")")) {
-                    bracketIsOpen = false;
-                }
+
                 if (clickedFunctionButton) {
                     clearTextViewOnResult();
                     clickedFunctionButton = false;
@@ -204,7 +227,7 @@ public class CalculatorONP {
     }
 
     private void setActionOnFunctionalButtons() {
-        for (Integer id : functionalButtons) {
+        for (Integer id : functionalButtonsIDs) {
             Button tmp = contex.findViewById(id);
             tmp.setOnClickListener((View v) -> {
                 Button tmpButton = (Button) v;
@@ -217,9 +240,7 @@ public class CalculatorONP {
                     enableNumericButtons();
                     clickedCE = false;
                 }
-                if (bracketIsOpen) {
-                    addTextFromButtonToTextViewOnResult(tmpButton);
-                } else {
+               else {
 
                     if (textViewOnResultContainDot()) {
                         addZeroAfterDotInTextViewOnResult();
@@ -244,15 +265,15 @@ public class CalculatorONP {
                         // System.out.println("if (textViewOnResult.getText().length() < size)");
                         if (isEmptyTextViewOnEquation() && !containActionFunctionalSignInTextViewOnEquation()) {
                             System.out.println("if (isEmptyTextViewOnEquation()");
-                            updateContentInTextViewOnEquation(tmpButton);
+                            transportContentFromResultToEquation(tmpButton);
                         } else {
-                            if (clickedEquelsButton) {
-                                System.out.println("if (clickedEquelsButton)");
+                            if (clickedEquelButton) {
+                                System.out.println("if (clickedEquelButton)");
                                 if (!isEmptyTextViewOnResult() && !isEmptyTextViewOnEquation()) {
-                                    updateContentInTextViewOnEquation(tmpButton);
+                                    transportContentFromResultToEquation(tmpButton);
                                 }
                                 clearTextViewOnResult();
-                                clickedEquelsButton = false;
+                                clickedEquelButton = false;
                             } else {
                                 addTextFromButtonToTextViewOnEquation(tmp);
                                 clearTextViewOnResult();
@@ -288,37 +309,37 @@ public class CalculatorONP {
 
     private void disableFunctionalButtons() {
         System.out.println("disableFunctionalButtons");
-        for (Integer item : functionalButtons) {
-            Button button = contex.findViewById(item);
+        for (Integer item : functionalButtonsIDs) {
+            TextView button = contex.findViewById(item);
             button.setEnabled(false);
         }
     }
 
     private void enableFunctionalButtons() {
         System.out.println("enableFunctionalButtons");
-        for (Integer item : functionalButtons) {
-            Button button = contex.findViewById(item);
+        for (Integer item : functionalButtonsIDs) {
+            TextView button = contex.findViewById(item);
             button.setEnabled(true);
         }
     }
 
     private void disableNumericButtons() {
         System.out.println("disableNumericButtons");
-        for (Integer item : numericButtons) {
-            Button button = contex.findViewById(item);
+        for (Integer item : numericButtonsIDs) {
+            TextView button = contex.findViewById(item);
             button.setEnabled(false);
         }
     }
 
     private void enableNumericButtons() {
         System.out.println("enableNumericButtons");
-        for (Integer item : numericButtons) {
-            Button button = contex.findViewById(item);
+        for (Integer item : numericButtonsIDs) {
+            TextView button = contex.findViewById(item);
             button.setEnabled(true);
         }
     }
 
-    private void setTextOnTextViewOnResultFromButton(Button button) {
+    private void setTextOnTextViewOnResultFromButton(TextView button) {
         System.out.println("setTextOnTextViewOnResultFromButton(" + button.getText() + ")");
         String sb = String.valueOf(textViewOnResult.getText()) +
                 button.getText();
@@ -330,10 +351,10 @@ public class CalculatorONP {
             System.out.println("setActionOnCEButton");
             clickedCE = true;
             clearTextViewOnResult();
+            clearTextViewOnEquation();
             buttonEqual.setEnabled(false);
-            if (!isEmptyTextViewOnEquation()) {
-                disableNumericButtons();
-            }
+            enableNumericButtons();
+
         });
     }
 
@@ -352,7 +373,7 @@ public class CalculatorONP {
                 } else {
 
                     clearTextViewOnEquation();
-                    clickedEquelsButton = false;
+                    clickedEquelButton = false;
                     enableNumericButtons();
                     disableFunctionalButtons();
                     buttonEqual.setEnabled(false);
@@ -398,33 +419,53 @@ public class CalculatorONP {
     }
 
     private void addZeroAfterDotInTextViewOnResult() {
+
         System.out.println("addZeroAfterDotInTextViewOnResult");
         String numberFromScreen = textViewOnResult.getText().toString();
-        if (numberFromScreen.contains(".")) {
+        if (isEmptyTextViewOnResult() && numberFromScreen.charAt(numberFromScreen.length()-1) == '.') {
             int lengthNumberOnScreen = numberFromScreen.length();
             char lastChar = numberFromScreen.charAt(lengthNumberOnScreen - 1);
             if (lastChar == '.') {
-                StringBuilder sb = new StringBuilder();
-                sb.append(textViewOnResult.getText());
-                sb.append(0);
-                textViewOnResult.setText(sb.toString());
+                String sb = String.valueOf(textViewOnResult.getText()) +
+                        0;
+                textViewOnResult.setText(sb);
             }
         }
+    }
+
+    private String replaceComasOnDotsInText(String text){
+        String resultText = text;
+        if (text.contains(",")) {
+            resultText = text.replaceAll(",", "");
+        }
+        return resultText;
     }
 
     private String convertStringOfNumberWithENotationToNormal(String number) {
         System.out.println("convertStringOfNumberWithENotationToNormal(" + number + ")");
         Double d = null;
-        String toReturn = number;
-        if (number.contains(",")) {
-            toReturn = number.replaceAll(",", "");
-        }
+        String toReturn = replaceComasOnDotsInText(number);
         try {
             d = Double.parseDouble(toReturn);
         } catch (NumberFormatException e) {
             return number;
         }
+        System.out.println("convertStringOfNumberWithENotationToNormal( return" + d.toString() + ")");
+        if(d > 99999999999999999.0){
+            return parseToCientificNotation(d);
+        }
+
         return d.toString();
+    }
+
+    private static String parseToCientificNotation(double value) {
+        int cont = 0;
+        java.text.DecimalFormat DECIMAL_FORMATER = new java.text.DecimalFormat("0.##");
+        while (((int) value) != 0) {
+            value /= 10;
+            cont++;
+        }
+        return DECIMAL_FORMATER.format(value).replace(",", ".") + "E" + cont;
     }
 
     private void addTextFromButtonToTextViewOnEquation(Button button) {
@@ -456,7 +497,7 @@ public class CalculatorONP {
     private boolean containActionFunctionalSignInTextViewOnEquation() {
         System.out.println("containActionFunctionalSignInTextViewOnEquation");
         String equation = textViewOnEquation.getText().toString();
-        for (Integer item : functionalButtons) {
+        for (Integer item : functionalButtonsIDs) {
             Button button = contex.findViewById(item);
             if (!equation.isEmpty()) {
                 if (equation.charAt(equation.length() - 1) == button.getText().toString().charAt(0)) {
@@ -474,7 +515,7 @@ public class CalculatorONP {
             equation = equation.substring(1, equation.length());
         }
         System.out.println("Equation: " + equation);
-        for (Integer item : functionalButtons) {
+        for (Integer item : functionalButtonsIDs) {
             Button button = contex.findViewById(item);
             if (!equation.isEmpty()) {
                 if (equation.contains(button.getText())) {
@@ -500,60 +541,63 @@ public class CalculatorONP {
 
     @SuppressLint("SetTextI18n")
     private void setActionOnSpecialButtons() {
-        for (Integer item : specialButtons) {
+        for (Integer item : specialButtonsIDs) {
             Button button = contex.findViewById(item);
             button.setOnClickListener((View v) -> {
-
-                clickedSpecialButton = true;
-                Button b = (Button) v;
-                System.out.println("setActionOnSpecialButtons( " + b.getText() + " )");
-                String action = b.getText().toString();
-                String number = "";
-                double numberD = 0.0;
-                if (!isEmptyTextViewOnResult()) {
-                    number = textViewOnResult.getText().toString();
-                    number = convertStringOfNumberWithENotationToNormal(number);
-                    numberD = Double.parseDouble(number);
+        if(containActionFunctionalSignInTextViewOnEquation() || isEmptyTextViewOnEquation()) {
+            clickedSpecialButton = true;
+            Button b = (Button) v;
+            System.out.println("setActionOnSpecialButtons( " + b.getText() + " )");
+            String action = b.getText().toString();
+            String number = "";
+            double numberD = 0.0;
+            if (!isEmptyTextViewOnResult()) {
+                number = textViewOnResult.getText().toString();
+                number = convertStringOfNumberWithENotationToNormal(number);
+                numberD = Double.parseDouble(number);
+            }
+            switch (action) {
+                case "sin": {
+                    numberD = Math.sin(numberD);
+                    break;
                 }
-                switch (action) {
-                    case "sin": {
-                        numberD = Math.sin(numberD);
-                        break;
-                    }
-                    case "cos": {
-                        numberD = Math.cos(numberD);
-                        break;
-                    }
-                    case "tan": {
-                        numberD = Math.tan(numberD);
-                        break;
-                    }
-                    case "ln": {
-                        if (numberD >= 0.0) {
-                            numberD = Math.log(numberD);
-                        } else {
-                            Toast.makeText(contex.getApplicationContext(), "Error: This is not positive number!", Toast.LENGTH_SHORT).show();
-                        }
-                        break;
-                    }
-                    case "pi": {
-                        numberD = Math.PI;
-                        break;
-                    }
-                    case "e": {
-                        numberD = Math.E;
-                        break;
-                    }
-                    case "sqrt": {
-                        if (numberD >= 0.0) {
-                            numberD = Math.sqrt(numberD);
-                        } else {
-                            Toast.makeText(contex.getApplicationContext(), "Error: This is not positive number!", Toast.LENGTH_SHORT).show();
-                        }
-                        break;
-                    }
+                case "cos": {
+                    numberD = Math.cos(numberD);
+                    break;
                 }
-                textViewOnResult.setText(convertStringOfNumberWithENotationToNormal(String.valueOf(numberD)));
+                case "tan": {
+                    numberD = Math.tan(numberD);
+                    break;
+                }
+                case "ln": {
+                    if (numberD >= 0.0) {
+                        numberD = Math.log(numberD);
+                    } else {
+                        Toast.makeText(contex.getApplicationContext(), "Error: This is not positive number!", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                }
+                case "pi": {
+                    numberD = Math.PI;
+                    break;
+                }
+                case "e": {
+                    numberD = Math.E;
+                    break;
+                }
+                case "sqrt": {
+                    if (numberD >= 0.0) {
+                        numberD = Math.sqrt(numberD);
+                    } else {
+                        Toast.makeText(contex.getApplicationContext(), "Error: This is not positive number!", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                }
+            }
+            textViewOnResult.setText(convertStringOfNumberWithENotationToNormal(fitNumberToNumbersOfPlaceOnTextViewOnResult(getHowManyDigitsIsPossibleDisplayOnTextViewOnResult(),numberD)));
+        }else{
+            Toast.makeText(contex.getApplicationContext(), "Error: You must select Action", Toast.LENGTH_SHORT).show();
+        }
             });
         }
     }
@@ -563,9 +607,9 @@ public class CalculatorONP {
     }
 
     private void enableSpecialButtons() {
-        if (specialButtons != null) {
+        if (specialButtonsIDs != null) {
             System.out.println("enableSpecialButtons");
-            for (Integer item : specialButtons) {
+            for (Integer item : specialButtonsIDs) {
                 Button button = contex.findViewById(item);
                 button.setEnabled(true);
             }
@@ -573,9 +617,9 @@ public class CalculatorONP {
     }
 
     private void disableSpecialButtons() {
-        if (specialButtons != null) {
+        if (specialButtonsIDs != null) {
             System.out.println("disableSpecialButtons");
-            for (Integer item : specialButtons) {
+            for (Integer item : specialButtonsIDs) {
                 Button button = contex.findViewById(item);
                 button.setEnabled(false);
             }
@@ -689,6 +733,14 @@ public class CalculatorONP {
         }
         tab[1] = sb.toString();
         return tab;
+    }
+
+    private void changeCharAction(TextView functionalButton){
+        if(!selectedFunction.equals(functionalButton.getText().toString())){
+            String sb = String.valueOf(textViewOnEquation.getText().subSequence(0, textViewOnEquation.length() - 1)) +
+                    functionalButton.getText();
+            textViewOnEquation.setText(sb);
+        }
     }
 }
 

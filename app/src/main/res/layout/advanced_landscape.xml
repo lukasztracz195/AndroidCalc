@@ -91,23 +91,73 @@
                 android:textAlignment="center"
                 android:textSize="18sp" />
 
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/sqrt"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/mybutton"
+                android:elevation="0dp"
+                android:text="@string/sqrt"
+                android:textAlignment="center"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/e"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/mybutton"
+                android:elevation="0dp"
+                android:text="@string/log"
+                android:textAlignment="center"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/pi"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/mybutton"
+                android:elevation="0dp"
+                android:text="@string/pow"
+                android:textAlignment="center"
+                android:textSize="18sp" />
+
             <Button
                 android:id="@+id/b_plus_minus"
-                android:layout_width="72dp"
-                android:layout_height="40dp"
-                android:layout_margin="10dp"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_margin="5dp"
                 android:background="@drawable/mybutton"
-                android:ellipsize="middle"
-                android:minWidth="100dp"
-                android:minHeight="80dp"
-                android:paddingLeft="5dp"
-                android:paddingTop="10dp"
-                android:paddingRight="5dp"
-                android:paddingBottom="10dp"
+                android:elevation="0dp"
                 android:text="@string/b_plus_minu"
                 android:textAlignment="center"
-                android:textSize="36sp"
-                android:visibility="visible" />
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/pow"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/mybutton"
+                android:elevation="0dp"
+                android:text="@string/pow2"
+                android:textAlignment="center"
+                android:textSize="18sp" />
 
         </TableRow>
 
@@ -129,98 +179,6 @@
                 android:textAlignment="center"
                 android:textSize="18sp"
                 tools:ignore="ButtonStyle,DuplicateIds" />
-
-            <Button
-                android:id="@+id/cos"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="60dp"
-                android:layout_height="30dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/mybutton"
-                android:elevation="0dp"
-                android:text="@string/cos"
-                android:textAlignment="center"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/tan"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="60dp"
-                android:layout_height="30dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/mybutton"
-                android:elevation="0dp"
-                android:text="@string/tan"
-                android:textAlignment="center"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/ln"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="60dp"
-                android:layout_height="30dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/mybutton"
-                android:elevation="0dp"
-                android:text="@string/ln"
-                android:textAlignment="center"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/e"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="60dp"
-                android:layout_height="30dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/mybutton"
-                android:elevation="0dp"
-                android:text="@string/log"
-                android:textAlignment="center"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/sqrt"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="60dp"
-                android:layout_height="30dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/mybutton"
-                android:elevation="0dp"
-                android:text="@string/sqrt"
-                android:textAlignment="center"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/pow"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="60dp"
-                android:layout_height="30dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/mybutton"
-                android:elevation="0dp"
-                android:text="@string/pow2"
-                android:textAlignment="center"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/pi"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="60dp"
-                android:layout_height="30dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/mybutton"
-                android:elevation="0dp"
-                android:text="@string/pow"
-                android:textAlignment="center"
-                android:textSize="18sp" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/b7"
@@ -278,6 +236,18 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/cos"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/mybutton"
+                android:elevation="0dp"
+                android:text="@string/cos"
+                android:textAlignment="center"
+                android:textSize="18sp" />
+
+            <Button
                 android:id="@+id/b4"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="60dp"
@@ -331,6 +301,18 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/tan"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/mybutton"
+                android:elevation="0dp"
+                android:text="@string/tan"
+                android:textAlignment="center"
+                android:textSize="18sp" />
 
             <Button
                 android:id="@+id/b1"
@@ -390,6 +372,18 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/ln"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/mybutton"
+                android:elevation="0dp"
+                android:text="@string/ln"
+                android:textAlignment="center"
+                android:textSize="18sp" />
+
+            <Button
                 android:id="@+id/b0"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="60dp"
@@ -403,18 +397,6 @@
                 tools:ignore="ButtonStyle" />
 
             <Button
-                android:id="@+id/b_"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="60dp"
-                android:layout_height="30dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/mybutton"
-                android:elevation="0dp"
-                android:text="@string/b_dot"
-                android:textAlignment="center"
-                android:textSize="18sp" />
-
-            <Button
                 android:id="@+id/b_equals"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="60dp"
@@ -425,6 +407,24 @@
                 android:text="@string/b_equals"
                 android:textAlignment="center"
                 android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/b_plus_minus"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/mybutton"
+                android:ellipsize="middle"
+                android:minWidth="100dp"
+                android:minHeight="80dp"
+                android:paddingLeft="5dp"
+                android:paddingTop="10dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="10dp"
+                android:text="@string/b_plus_minu"
+                android:textAlignment="center"
+                android:textSize="18dp"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/b_add"

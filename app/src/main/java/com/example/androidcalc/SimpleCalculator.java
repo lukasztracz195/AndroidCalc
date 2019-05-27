@@ -5,16 +5,15 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class SimpleCalculator extends Activity {
 
-    private TextView screen;
+    private TextView textViewOnEquation;
+    private TextView textViewOnResult;
     private Configuration config;
 
     private List<Integer> numericButtonsIds = Arrays.asList(R.id.b0, R.id.b1, R.id.b2, R.id.b3,
@@ -29,9 +28,11 @@ public class SimpleCalculator extends Activity {
         DisplayMode.setFullscreen(this);
         config = getResources().getConfiguration();
         onConfigurationChanged(getResources().getConfiguration());
-        screen = findViewById(R.id.result);
+        textViewOnEquation = findViewById(R.id.equation);
+        textViewOnResult = findViewById(R.id.result);
         if (savedInstanceState != null && !savedInstanceState.isEmpty()) {
-            screen.setText(savedInstanceState.getCharSequence("equation"));
+            textViewOnEquation.setText(savedInstanceState.getCharSequence("equation"));
+            textViewOnResult.setText(savedInstanceState.getCharSequence("result"));
         }
         setBackAction();
         CalculatorONP calc = new CalculatorONP(this, numericButtonsIds, functionalButtonsIds,config);
@@ -66,7 +67,8 @@ public class SimpleCalculator extends Activity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putCharSequence("equation", screen.getText());
+        outState.putCharSequence("equation", textViewOnEquation.getText());
+        outState.putCharSequence("result", textViewOnResult.getText());
         super.onSaveInstanceState(outState);
     }
 

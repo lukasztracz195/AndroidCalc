@@ -14,7 +14,8 @@ import java.util.List;
 
 public class AdvancedCalculator extends Activity {
 
-    private TextView screen;
+    private TextView textViewOnEquation;
+    private TextView textViewOnResult;
     private List<Integer> numericButtonsIds = Arrays.asList(R.id.b0, R.id.b1, R.id.b2, R.id.b3,
             R.id.b4, R.id.b5, R.id.b6, R.id.b7,
             R.id.b8, R.id.b9, R.id.b_);
@@ -31,13 +32,15 @@ public class AdvancedCalculator extends Activity {
         DisplayMode.setFullscreen(this);
         Configuration config = getResources().getConfiguration();
         onConfigurationChanged(getResources().getConfiguration());
-        screen = findViewById(R.id.result);
+        textViewOnEquation = findViewById(R.id.equation);
+        textViewOnResult = findViewById(R.id.result);
         if (savedInstanceState != null && !savedInstanceState.isEmpty()) {
-            screen.setText(savedInstanceState.getCharSequence("equation"));
+            textViewOnEquation.setText(savedInstanceState.getCharSequence("equation"));
+            textViewOnResult.setText(savedInstanceState.getCharSequence("result"));
         }
         setBackAction();
         setChangeCalculatorOnSimpleAction();
-        CalculatorONP calc = new CalculatorONP(this, numericButtonsIds, functionalButtonsIds,specialButtonsIds,config);
+        CalculatorONP calc = new CalculatorONP(this, numericButtonsIds, functionalButtonsIds,specialButtonsIds,constButtonsIds,config);
     }
 
 
@@ -79,7 +82,8 @@ public class AdvancedCalculator extends Activity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putCharSequence("equation", screen.getText());
+        outState.putCharSequence("equation", textViewOnEquation.getText());
+        outState.putCharSequence("result", textViewOnResult.getText());
         super.onSaveInstanceState(outState);
     }
 }
