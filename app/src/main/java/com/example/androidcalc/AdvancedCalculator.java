@@ -6,9 +6,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-
-
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,14 +15,14 @@ public class AdvancedCalculator extends Activity {
     private TextView textViewOnResult;
     private List<Integer> numericButtonsIds = Arrays.asList(R.id.b0, R.id.b1, R.id.b2, R.id.b3,
             R.id.b4, R.id.b5, R.id.b6, R.id.b7,
-            R.id.b8, R.id.b9, R.id.b_);
+            R.id.b8, R.id.b9);
     private List<Integer> functionalButtonsIds = Arrays.asList(R.id.b_add, R.id.b_substract,
             R.id.b_multiply, R.id.b_diff,R.id.pow);
     private List<Integer> specialButtonsIds = Arrays.asList(R.id.sin,
             R.id.cos, R.id.tan, R.id.sqrt, R.id.ln);
 
     private List<Integer> constButtonsIds = Arrays.asList(R.id.pi, R.id.e);
-
+    private CalculatorONP calc;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,10 +34,31 @@ public class AdvancedCalculator extends Activity {
         if (savedInstanceState != null && !savedInstanceState.isEmpty()) {
             textViewOnEquation.setText(savedInstanceState.getCharSequence("equation"));
             textViewOnResult.setText(savedInstanceState.getCharSequence("result"));
+            if(savedInstanceState.containsKey("onpCalcAdw")) {
+                calc = (CalculatorONP) savedInstanceState.getSerializable("onpCalcAdw");
+                calc.setContex(this);
+                calc.setConfig(config);
+                calc.setNumericTextViewsIDs(numericButtonsIds);
+                calc.setFunctionalTextViewsIDs(functionalButtonsIds);
+                calc.setSpecialTextViewsIDs(specialButtonsIds);
+                calc.setConstTextViewsIDs(constButtonsIds);
+                calc.setTextViews();
+                calc.setActionTextViews();
+            }
+        }else{
+            calc = new CalculatorONP(this, numericButtonsIds, functionalButtonsIds,config);
+            calc.setContex(this);
+            calc.setConfig(config);
+            calc.setNumericTextViewsIDs(numericButtonsIds);
+            calc.setFunctionalTextViewsIDs(functionalButtonsIds);
+            calc.setSpecialTextViewsIDs(specialButtonsIds);
+            calc.setConstTextViewsIDs(constButtonsIds);
+            calc.setTextViews();
+            calc.setActionTextViews();
         }
         setBackAction();
         setChangeCalculatorOnSimpleAction();
-        CalculatorONP calc = new CalculatorONP(this, numericButtonsIds, functionalButtonsIds,specialButtonsIds,constButtonsIds,config);
+
     }
 
 
@@ -82,6 +100,7 @@ public class AdvancedCalculator extends Activity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable("onpCalcAdw",calc);
         outState.putCharSequence("equation", textViewOnEquation.getText());
         outState.putCharSequence("result", textViewOnResult.getText());
         super.onSaveInstanceState(outState);

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,10 +16,11 @@ public class SimpleCalculator extends Activity {
     private TextView textViewOnEquation;
     private TextView textViewOnResult;
     private Configuration config;
+    private CalculatorONP calc;
 
     private List<Integer> numericButtonsIds = Arrays.asList(R.id.b0, R.id.b1, R.id.b2, R.id.b3,
             R.id.b4, R.id.b5, R.id.b6, R.id.b7,
-            R.id.b8, R.id.b9, R.id.b_);
+            R.id.b8, R.id.b9);
     private List<Integer> functionalButtonsIds = Arrays.asList(R.id.b_add, R.id.b_substract,
             R.id.b_multiply, R.id.b_diff);
 
@@ -33,9 +35,22 @@ public class SimpleCalculator extends Activity {
         if (savedInstanceState != null && !savedInstanceState.isEmpty()) {
             textViewOnEquation.setText(savedInstanceState.getCharSequence("equation"));
             textViewOnResult.setText(savedInstanceState.getCharSequence("result"));
+            if(savedInstanceState.containsKey("onpCalc")) {
+                calc = (CalculatorONP) savedInstanceState.getSerializable("onpCalc");
+                assert calc != null;
+                calc.setContex(this);
+                calc.setConfig(config);
+                calc.setNumericTextViewsIDs(numericButtonsIds);
+                calc.setFunctionalTextViewsIDs(functionalButtonsIds);
+                calc.setTextViews();
+                calc.setActionTextViews();
+            }
+        }else{
+            calc = new CalculatorONP(this, numericButtonsIds, functionalButtonsIds,config);
+
         }
         setBackAction();
-        CalculatorONP calc = new CalculatorONP(this, numericButtonsIds, functionalButtonsIds,config);
+
     }
 
     @Override
@@ -67,6 +82,7 @@ public class SimpleCalculator extends Activity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable("onpCalc",calc);
         outState.putCharSequence("equation", textViewOnEquation.getText());
         outState.putCharSequence("result", textViewOnResult.getText());
         super.onSaveInstanceState(outState);

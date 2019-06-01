@@ -4,9 +4,9 @@ import java.util.Stack;
 import java.util.StringTokenizer;
 
 public class ONP {
-    private String wyrazenie;//zawiera wyrażenie w pierwotnej postaci
+    private String wyrazenie;
 
-    private String onp;//wyrażenie w odwrotnej notacji polskiej
+    private String onp;
 
     private String nieLiczby = "+-*/^()";
 
@@ -21,44 +21,11 @@ public class ONP {
 
         onp = "";
 
-        toONP();//wywołaj konwersję wyrażenia na oonp
+        toONP();
         System.out.println("WyrażenieONP: " + onp);
 
     }
 
-    /**
-     * Konwersja wyrażenia na odwrotną notację polską.
-     * <p>
-     * 1 - dzielimy wyrażenie infiksowe na części na podstawie separatorów
-     * <p>
-     * 2 - dopóki są elementy w wyrażeniu wejściowym
-     * <p>
-     * 2.1 - pobieramy element
-     * <p>
-     * 2.2 - jeżeli element jest operatorem
-     * <p>
-     * 2.2.1 - sprawdzemy priorytety
-     * <p>
-     * 2.2.2 - odkładamy operator na stos
-     * <p>
-     * 2.3 - jeżeli element jest nawiasem otwierającym
-     * <p>
-     * 2.3.1 - odłóż na stos nawias otwierający
-     * <p>
-     * 2.4 - jeżeli element jest nawiasem zamykającym
-     * <p>
-     * 2.4.1 - ściągamy operatory ze stosu, aż do nawiasu otwierajęcego
-     * <p>
-     * 2.4.2 - ściągnij ze stosu
-     * <p>
-     * 2.4.3 - ściągnij już niepotrzebny nawias otwierający
-     * <p>
-     * 2.5 - jeżeli element nie jest operatorem ani nawiasem dodajemy go do wyrażenia postfiksowego
-     * <p>
-     * 3 - ściągamy ze stosu pozostałe operatory i dodajemy je do wyrażenia postfiksowego
-     * <p>
-     * 3.1 - ściągnij i dopisz do wyrażenia onp
-     */
 
     private void toONP() {
 
@@ -126,20 +93,6 @@ public class ONP {
 
     }
 
-    /**
-     * Obliczenie priorytetu operatora:
-     * <p>
-     * + lub - = 1
-     * <p>
-     * * lub / = 2
-     * <p>
-     * ^ = 3
-     * <p>
-     * pozostałe = 0
-     *
-     * @return
-     */
-
     private boolean czyNieLiczba(char z) {
 
         for (int i = 0; i < nieLiczby.length(); i++) {
@@ -168,9 +121,6 @@ public class ONP {
 
     }
 
-    /**
-     * Zwróć wyrażenie w postaci Odwrotnej Notacji Polskiej
-     */
 
     public @Override
     String toString() //zwróć wyrażenie w postaci onp
@@ -181,11 +131,6 @@ public class ONP {
 
     }
 
-    /**
-     * Dokonaj obliczenia zapisanego w odwrotnej notacji polskiej i zwróć wynik.
-     *
-     * @return Zwraca wynik z zapisanego wyrażenia w postaci ONP.
-     */
 
     public double oblicz() {
 
