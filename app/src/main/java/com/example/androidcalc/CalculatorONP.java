@@ -101,7 +101,7 @@ public class CalculatorONP implements Serializable {
             TextView TextView = (TextView) v;
             int size = getHowManyDigitsIsPossibleDisplayOnTextViewOnResult();
             System.out.println("setActionDot");
-            if (!String.valueOf(textViewOnResult.getText()).contains(".") && textViewOnResult.getText().length() >= 0) {
+            if (!String.valueOf(textViewOnResult.getText()).contains(".") && textViewOnResult.getText().length() > 0) {
                 setTextOnTextViewOnResultFromTextView(TextView);
                 System.out.println("yes");
             } else {
@@ -127,14 +127,13 @@ public class CalculatorONP implements Serializable {
 		*/
                     System.out.println("isEmptyTextViewOnResult isEmptyTextViewOnEquation");
                     textViewOnEquation.setText("0");
-                    textViewOnResult.setText("0");
                     if (error) {
                         TextViewCE.callOnClick();
                         error = false;
                     }
 		/*
 			TextViewOnEquation = "0"
-			TextViewOnResult = "0"
+			TextViewOnResult = ""
 		*/
                 } else {
                     if (containOperationInTextViewOnEquation()) {
@@ -157,33 +156,53 @@ public class CalculatorONP implements Serializable {
 				TextViewOnResult = ""
 			*/
                         System.out.println("isEmptyTextViewOnResult !isEmptyTextViewOnEquation !containOperationInTextViewOnEquation");
-                        textViewOnResult.setText(textViewOnEquation.getText());
+                        //textViewOnResult.setText(textViewOnEquation.getText());
                         if (error) {
                             TextViewCE.callOnClick();
                             error = false;
                         }
 			/*
 				TextViewOnEquation = "5.0"
-				TextViewOnResult = "5.0"
+				TextViewOnResult = ""
 			*/
                     }
                 }
             } else {
                 if (isEmptyTextViewOnEquation()) {
-			/*
-				TextViewOnEquation = ""
-				TextViewOnResult = "2.0"
-			*/
-                    System.out.println("!isEmptyTextViewOnResult isEmptyTextViewOnEquation");
-                    textViewOnEquation.setText(textViewOnResult.getText());
-                    if (error) {
-                        TextViewCE.callOnClick();
-                        error = false;
-                    }
+                    int last = textViewOnResult.length();
+                    if (lastCharInTextViewOnResultIsDot()) {
+                        /*
+				            TextViewOnEquation = ""
+				            TextViewOnResult = "2."
+			            */
+                        System.out.println("!isEmptyTextViewOnResult isEmptyTextViewOnEquation lastCharInTextViewOnResultIsDot");
+                        textViewOnEquation.setText(connectTextWithTextViews(textViewOnResult.getText().toString(), "0"));
+                        clearTextViewOnResult();
+                        if (error) {
+                            TextViewCE.callOnClick();
+                            error = false;
+                        }
+                        /*
+				            TextViewOnEquation = "2.0"
+				            TextViewOnResult = ""
+			            */
+                    } else {
+			            /*
+				            TextViewOnEquation = ""
+				            TextViewOnResult = "2.0"
+			            */
+                        System.out.println("!isEmptyTextViewOnResult isEmptyTextViewOnEquation !lastCharInTextViewOnResultIsDot");
+                        textViewOnEquation.setText(textViewOnResult.getText());
+                        clearTextViewOnResult();
+                        if (error) {
+                            TextViewCE.callOnClick();
+                            error = false;
+                        }
 			/*
 				TextViewOnEquation = "2.0"
-				TextViewOnResult = "2.0"
+				TextViewOnResult = ""
 			*/
+                    }
                 } else {
                     if (containCharOperationInTextViewOnEquation()) {
 			/*
@@ -204,6 +223,22 @@ public class CalculatorONP implements Serializable {
 				TextViewOnEquation = "5.0/2.0"
 				TextViewOnResult = "2.5"
 			*/
+                    } else {
+                        /*
+                        TextViewOnEquation = "5.0"
+                        TextViewOnResult = "2.0"
+                        */
+                        System.out.println("!isEmptyTextViewOnResult !isEmptyTextViewOnEquation !containCharOperationInTextViewOnEquation");
+                        textViewOnEquation.setText(textViewOnResult.getText());
+                        textViewOnResult.setText("");
+                        if (error) {
+                            TextViewCE.callOnClick();
+                            error = false;
+                        }
+                        /*
+                        TextViewOnEquation = "2.0"
+                        TextViewOnResult = ""
+                        */
                     }
                 }
             }
@@ -227,6 +262,9 @@ public class CalculatorONP implements Serializable {
                             setTextOnTextViewOnResultFromTextView(tmpTextView);
                         }
                     } else {
+                        if (textViewOnResult.getText().toString().equals("0")) {
+                            clearTextViewOnResult();
+                        }
                         setTextOnTextViewOnResultFromTextView(tmpTextView);
                     }
 
@@ -262,24 +300,45 @@ public class CalculatorONP implements Serializable {
                         verificationError(value);
                         */
                     } else {
-                    /*
-                        TextViewOnEquation = ""
-                        TextViewOnResult = "5.0"
-                        znakFunkcyjny = "*"
-                    */
-                        System.out.println("isEmptyTextViewOnEquation !isEmptyTextViewOnResult");
-                        textViewOnEquation.setText(connectTextWithTextViews(textViewOnResult, tmpTextView));
-                        textViewOnResult.setText("");
-                        System.out.println(textViewOnEquation.getText().toString());
-                        if (error) {
-                            TextViewCE.callOnClick();
-                            error = false;
+                        if (lastCharInTextViewOnResultIsDot()) {
+                            /*
+                                TextViewOnEquation = ""
+                                TextViewOnResult = "2."
+                                znakFunkcyjny = "*"
+                            */
+                            System.out.println("isEmptyTextViewOnEquation !isEmptyTextViewOnResult lastCharInTextViewOnResultIsDot ");
+                            textViewOnEquation.setText(connectTextWithTextViews(textViewOnResult, "0"));
+                            textViewOnEquation.setText(connectTextWithTextViews(textViewOnEquation, tmpTextView));
+                            textViewOnResult.setText("");
+                            if (error) {
+                                TextViewCE.callOnClick();
+                                error = false;
+                            }
+                                /*
+                                TextViewOnEquation = "2.0*"
+                                TextViewOnResult = ""
+                                znakFunkcyjny = "*"
+                                */
+                        } else {
+                            /*
+                                TextViewOnEquation = ""
+                                TextViewOnResult = "2.0"
+                                znakFunkcyjny = "*"
+                            */
+                            System.out.println("isEmptyTextViewOnEquation !isEmptyTextViewOnResult !lastCharInTextViewOnResultIsDot ");
+                            textViewOnEquation.setText(connectTextWithTextViews(textViewOnResult, tmpTextView));
+                            textViewOnResult.setText("");
+                            System.out.println(textViewOnEquation.getText().toString());
+                            if (error) {
+                                TextViewCE.callOnClick();
+                                error = false;
+                            }
+                            /*
+                                TextViewOnEquation = "2.0*"
+                                TextViewOnResult = ""
+                            */
                         }
                     }
-			        /*
-                        TextViewOnEquation = "5.0*"
-                        TextViewOnResult = ""
-			        */
                 } else {
                     if (containCharOperationInTextViewOnEquation()) {
                         if (isEmptyTextViewOnResult()) {
@@ -332,22 +391,43 @@ public class CalculatorONP implements Serializable {
                         }
                     } else {
                         if (isEmptyTextViewOnResult()) {
-			/*
-				TextViewOnEquation = "32.0"
-				TextViewOnResult = ""
-				znakFunkcyjny = "*"
-			*/
-                            System.out.println("!isEmptyTextViewOnEquation !containOperationInTextViewOnEquation isEmptyTextViewOnResult");
-                            textViewOnEquation.setText(connectTextWithTextViews(textViewOnEquation, tmpTextView));
-                            textViewOnResult.setText("");
-                            if (error) {
-                                TextViewCE.callOnClick();
-                                error = false;
-                            }
+                            if (lastCharInTextViewOnResultIsDot()) {
+                            /*
+                                TextViewOnEquation = "32."
+                                TextViewOnResult = ""
+                                znakFunkcyjny = "*"
+                            */
+                                System.out.println("!isEmptyTextViewOnEquation !containOperationInTextViewOnEquation isEmptyTextViewOnResult lastCharInTextViewOnResultIsDot");
+                                textViewOnEquation.setText(connectTextWithTextViews(textViewOnEquation, "0"));
+                                textViewOnEquation.setText(connectTextWithTextViews(textViewOnEquation, tmpTextView));
+                                textViewOnResult.setText("");
+                                if (error) {
+                                    TextViewCE.callOnClick();
+                                    error = false;
+                                }
+                                /*
+                                TextViewOnEquation = "32.0*"
+                                TextViewOnResult = ""
+                                znakFunkcyjny = "*"
+                                */
+                            } else {
+                            /*
+                                TextViewOnEquation = "32.0"
+                                TextViewOnResult = ""
+                                znakFunkcyjny = "*"
+                            */
+                                System.out.println("!isEmptyTextViewOnEquation !containOperationInTextViewOnEquation isEmptyTextViewOnResult");
+                                textViewOnEquation.setText(connectTextWithTextViews(textViewOnEquation, tmpTextView));
+                                textViewOnResult.setText("");
+                                if (error) {
+                                    TextViewCE.callOnClick();
+                                    error = false;
+                                }
 			/*
 				TextViewOnEquation = "32.0*"
 				TextViewOnResult = ""
 			*/
+                            }
                         } else {
 			/*
 				TextViewOnEquation = "32.0"
@@ -566,7 +646,7 @@ public class CalculatorONP implements Serializable {
         for (Integer item : specialTextViewsIDs) {
             TextView TextView = contex.findViewById(item);
             TextView.setOnClickListener((View v) -> {
-                if (containActionFunctionalSignInTextViewOnEquation() || isEmptyTextViewOnEquation()) {
+                if (!isEmptyTextViewOnResult() || !isEmptyTextViewOnEquation()) {
                     TextView b = (TextView) v;
                     System.out.println("setActionOnSpecialTextViews( " + b.getText() + " )");
                     String action = b.getText().toString();
@@ -574,6 +654,13 @@ public class CalculatorONP implements Serializable {
                     double numberD = 0.0;
                     if (!isEmptyTextViewOnResult()) {
                         number = textViewOnResult.getText().toString();
+                        number = convertStringOfNumberWithENotationToNormal(number);
+                        numberD = Double.parseDouble(number);
+                    } else {
+                        if (containCharOperationInTextViewOnEquation()) {
+                            TextViewC.callOnClick();
+                        }
+                        number = textViewOnEquation.getText().toString();
                         number = convertStringOfNumberWithENotationToNormal(number);
                         numberD = Double.parseDouble(number);
                     }
@@ -647,7 +734,7 @@ public class CalculatorONP implements Serializable {
         });
     }
 
-    private double negativeNumberCalculator() {
+    private double negativeNumberCalculator() throws Exception {
         System.out.println("negativeNumberCalculator");
         addZeroAfterDotInTextViewOnResult();
         String diff = selectedFunction;
@@ -662,6 +749,14 @@ public class CalculatorONP implements Serializable {
             int[] tabMinus = getPositionSignInString(equation, '-');
             result = equation.substring(tabMinus[1] + 1);
             equation = equation.substring(0, tabMinus[1]);
+        } else if ((countCharInString(equation, '-') == 2)) {
+            equation = equation.replace("--", "+");
+            diff = "+";
+            System.out.println(equation);
+            String[] array = manualSplit(equation, diff.charAt(0));
+            equation = array[0];
+            result = array[1];
+
         } else {
             System.out.println(equation);
             String[] array = manualSplit(equation, diff.charAt(0));
@@ -791,12 +886,19 @@ public class CalculatorONP implements Serializable {
             TextView TextView = contex.findViewById(item);
             listOfOperationsString.add(TextView.getText().toString());
         }
+        listOfOperationsString.add("^");
     }
 
     private boolean containOperationInTextViewOnEquation() {
         int last = textViewOnEquation.length();
-        String probablyOperation = textViewOnEquation.getText().subSequence(last - 2, last - 1).toString();
-        return listOfOperationsString.contains(probablyOperation);
+        String probablyOperation;
+        if (last >= 2) {
+            probablyOperation = textViewOnEquation.getText().subSequence(last - 2, last - 1).toString();
+            return listOfOperationsString.contains(probablyOperation);
+        } else {
+            return false;
+        }
+
     }
 
     private boolean containCharOperationInTextViewOnEquation() {
@@ -812,10 +914,22 @@ public class CalculatorONP implements Serializable {
     private double calculate() {
         double result = 0.0;
         if (!isEmptyTextViewOnEquation() && containNegativeNumbersInTextViewOnEquation() || containNegativeNumbersInTextViewOnResult()) {
-            result = negativeNumberCalculator();
+            try {
+                result = negativeNumberCalculator();
+            } catch (Exception e) {
+                Toast.makeText(contex.getApplicationContext(), "Error: Syntax Error!", Toast.LENGTH_SHORT).show();
+                TextViewCE.callOnClick();
+                result = 0.0;
+            }
         } else {
-            ONP onp = new ONP(String.valueOf(textViewOnEquation.getText()));
-            result = onp.oblicz();
+            try {
+                ONP onp = new ONP(String.valueOf(textViewOnEquation.getText()));
+                result = onp.oblicz();
+            } catch (Exception e) {
+                Toast.makeText(contex.getApplicationContext(), "Error: Syntax Error!", Toast.LENGTH_SHORT).show();
+                TextViewCE.callOnClick();
+                result = 0.0;
+            }
         }
         return result;
     }
@@ -830,6 +944,11 @@ public class CalculatorONP implements Serializable {
                 two.getText();
     }
 
+    private String connectTextWithTextViews(TextView one, String two) {
+        return one.getText().toString() +
+                two;
+    }
+
     private String connectTextWithTextViews(String one, String two) {
         return String.valueOf(one) +
                 two;
@@ -841,6 +960,11 @@ public class CalculatorONP implements Serializable {
             String textFromResult = textViewOnResult.getText().toString();
             return textFromResult.charAt(0) != '0';
         }
+    }
+
+    private boolean lastCharInTextViewOnResultIsDot() {
+        int last = textViewOnResult.length();
+        return textViewOnResult.getText().toString().charAt(last - 1) == '.';
     }
 
 }
