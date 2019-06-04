@@ -5,21 +5,22 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
 public class SimpleCalculator extends Activity {
 
-    private TextView screen;
+    private TextView textViewOnEquation;
+    private TextView textViewOnResult;
     private Configuration config;
+    private CalculatorONP calc;
 
     private List<Integer> numericButtonsIds = Arrays.asList(R.id.b0, R.id.b1, R.id.b2, R.id.b3,
             R.id.b4, R.id.b5, R.id.b6, R.id.b7,
-            R.id.b8, R.id.b9, R.id.b_);
+            R.id.b8, R.id.b9);
     private List<Integer> functionalButtonsIds = Arrays.asList(R.id.b_add, R.id.b_substract,
             R.id.b_multiply, R.id.b_diff);
 
@@ -29,12 +30,27 @@ public class SimpleCalculator extends Activity {
         DisplayMode.setFullscreen(this);
         config = getResources().getConfiguration();
         onConfigurationChanged(getResources().getConfiguration());
-        screen = findViewById(R.id.result);
+        textViewOnEquation = findViewById(R.id.equation);
+        textViewOnResult = findViewById(R.id.result);
         if (savedInstanceState != null && !savedInstanceState.isEmpty()) {
-            screen.setText(savedInstanceState.getCharSequence("equation"));
+            textViewOnEquation.setText(savedInstanceState.getCharSequence("equation"));
+            textViewOnResult.setText(savedInstanceState.getCharSequence("result"));
+            if(savedInstanceState.containsKey("onpCalc")) {
+                calc = (CalculatorONP) savedInstanceState.getSerializable("onpCalc");
+                assert calc != null;
+                calc.setContex(this);
+                calc.setConfig(config);
+                calc.setNumericTextViewsIDs(numericButtonsIds);
+                calc.setFunctionalTextViewsIDs(functionalButtonsIds);
+                calc.setTextViews();
+                calc.setActionTextViews();
+            }
+        }else{
+            calc = new CalculatorONP(this, numericButtonsIds, functionalButtonsIds,config);
+
         }
         setBackAction();
-        CalculatorONP calc = new CalculatorONP(this, numericButtonsIds, functionalButtonsIds,config);
+
     }
 
     @Override
@@ -66,7 +82,9 @@ public class SimpleCalculator extends Activity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putCharSequence("equation", screen.getText());
+        outState.putSerializable("onpCalc",calc);
+        outState.putCharSequence("equation", textViewOnEquation.getText());
+        outState.putCharSequence("result", textViewOnResult.getText());
         super.onSaveInstanceState(outState);
     }
 
